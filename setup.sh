@@ -2,7 +2,7 @@
 # Prepares an Amp orb for a Kirby site. Runs from the repository root as the project's
 # pre-setup script, so it runs on fresh orbs and again on stale snapshots: every step
 # checks before it installs. Everything it generates stays out of Git.
-set -euo pipefail
+set -Eeuo pipefail
 
 orb_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 repo_root="$PWD"
@@ -14,6 +14,7 @@ fail() {
 	echo "[kirby-orb] error: $*" >&2
 	exit 1
 }
+trap 'fail "line $LINENO: $BASH_COMMAND"' ERR
 
 log "kirby-orb $(basename "$orb_dir") in $repo_root"
 # Amp sources ~/.env in every login shell, which resets PATH but keeps ~/.local/bin. Tools
@@ -88,7 +89,9 @@ step "PHP ready"
 package_manager=""
 if [[ -f package.json ]]; then
 	node_version="${KIRBY_ORB_NODE:-$(pinned node | head -1)}"
-	[[ -n "$node_version" ]] || node_version="$(cat .nvmrc .node-version 2>/dev/null | head -1 | tr -d '[:space:]v')"
+	for file in .nvmrc .node-version; do
+		[[ -n "$node_version" || ! -f "$file" ]] || node_version="$(head -1 "$file" | tr -d '[:space:]v')"
+	done
 	[[ -n "$node_version" ]] || node_version="$(json package.json '.engines.node' | grep -oE '[0-9]+' | head -1 || true)"
 	[[ -n "$node_version" ]] || node_version=lts
 
