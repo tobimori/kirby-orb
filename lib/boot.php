@@ -1,7 +1,5 @@
 <?php
 
-// Starts the Kirby site behind the given index.php and hands the app to $then. The page the
-// index renders is discarded; $then runs at shutdown so it also works when the index exits.
 function kirby_orb_boot($index, $then)
 {
 	$_SERVER['REQUEST_URI'] = '/__kirby-orb';

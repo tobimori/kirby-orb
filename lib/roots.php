@@ -1,6 +1,5 @@
 <?php
 
-// Prints the site's Kirby roots as JSON: php roots.php <index.php>
 require __DIR__ . '/boot.php';
 
 kirby_orb_boot(realpath($argv[1]), function ($kirby) {

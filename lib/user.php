@@ -1,6 +1,5 @@
 <?php
 
-// Creates or resets the Panel admin agent@orb.test and prints a fresh password: php user.php <index.php>
 require __DIR__ . '/boot.php';
 
 kirby_orb_boot(realpath($argv[1]), function ($kirby) {
